@@ -21,7 +21,7 @@ class DetailedActivity : AppCompatActivity() {
             detailedWebview.settings.builtInZoomControls=true
 
 // detailedWebview.settings.userAgentString=""
-//code to get themobile website
+//code to get the mobile website
 
             detailedWebview.webViewClient=object:WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {

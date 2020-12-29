@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -26,15 +25,17 @@ class MainActivity : AppCompatActivity() {
     private var articles = mutableListOf<Article>()
     var pageNum = 1
     var totalResults = -1
-    var i=0
+    var i = 0
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        var name = intent.getStringExtra("category")
+        toolbar.setTitle(name+" (today's updates)")
+
         setSupportActionBar(findViewById(R.id.toolbar))
 
-            progressBar_main.visibility= View.VISIBLE
+        progressBar_main.visibility = View.VISIBLE
 
         //creating adapter object
         adapter = NewsAdapter(this, articles)
@@ -46,14 +47,13 @@ class MainActivity : AppCompatActivity() {
         layoutManager.setPagerFlingVelocity(3000)
         news_list1.layoutManager = layoutManager
 
-
         layoutManager.setItemChangedListener(object : StackLayoutManager.ItemChangedListener {
             override fun onItemChanged(position: Int) {
 
                 container.setBackgroundColor(Color.parseColor(ColorPicker.getColor()))
                 toolbar.setBackgroundColor(Color.parseColor(ColorPicker.getColor1()))
 
-                  i++//increamenting the count
+                i++//increamenting the count
 
                 Log.d(
                     "mainActivity",
@@ -78,42 +78,61 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent();
             intent.action = Intent.ACTION_SEND
             intent.type = "text/plain"
-            intent.putExtra(Intent.EXTRA_TEXT, "hey i have got this news from DailyDrama Entertainment android app.. "+articles.get(layoutManager.getFirstVisibleItemPosition()).url)
-            startActivity(Intent.createChooser(intent,"share this news using..."))
-Log.d("count",layoutManager.getFirstVisibleItemPosition().toString()  +"value of i=$i")
+            intent.putExtra(
+                Intent.EXTRA_TEXT,
+                "hey i have got this news from DailyDrama Entertainment android app.. " + articles.get(
+                    layoutManager.getFirstVisibleItemPosition()
+                ).url
+            )
+            startActivity(Intent.createChooser(intent, "share this news using..."))
+            Log.d("count", layoutManager.getFirstVisibleItemPosition().toString() + "value of i=$i")
 //    Snackbar.make(view, "coming soon...", Snackbar.LENGTH_LONG)
 //    .setAction("Action", null).show()
         }
     }
-   private fun getNews() {
+
+    private fun getNews() {
 
         Log.d("getNews", "request for page  $pageNum")
 
-        val news = NewService.newsInstance.getHeadlines("in", pageNum, "entertainment","popularity")
+        var name = intent.getStringExtra("category")
+        val news = NewService.newsInstance.getHeadlines("in", pageNum, name, "popularity")
 
         news.enqueue(object : Callback<News> {
             override fun onFailure(call: Call<News>, t: Throwable) {
-                progressBar_main.visibility=View.GONE
+                progressBar_main.visibility = View.GONE
                 Log.d("error", t.toString())
-                Toasty.error(applicationContext, "error in fetching news,check internet connection", Toast.LENGTH_SHORT, true).show();
-  }
+                Toasty.error(
+                    applicationContext,
+                    "error in fetching news,check internet connection",
+                    Toast.LENGTH_SHORT,
+                    true
+                ).show();
+            }
+
             override fun onResponse(call: Call<News>, response: Response<News>) {
 
                 val mynews = response.body()
+
                 if (mynews != null) {
-                    progressBar_main.visibility=View.GONE
+                    progressBar_main.visibility = View.GONE
 
-           Toasty.success(applicationContext, "Success!", Toast.LENGTH_SHORT, true).show();
+                    Toasty.success(applicationContext, "Swipe up to see more!!  ", Toast.LENGTH_SHORT, true).show();
 
-           Log.d("ifblock", response.body().toString())
+                    Log.d("ifblock", response.body().toString())
 
                     totalResults = mynews.totalResults    //will get total count here
 
                     articles.addAll(mynews.articles)
                     adapter.notifyDataSetChanged()
- } else {
-                    Toasty.warning(applicationContext, "getting null response", Toast.LENGTH_SHORT, true).show();
-  }
+                } else {
+                    Toasty.warning(
+                        applicationContext,
+                        "getting null response",
+                        Toast.LENGTH_SHORT,
+                        true
+                    ).show();
+                }
             }
 
         })
@@ -126,26 +145,24 @@ Log.d("count",layoutManager.getFirstVisibleItemPosition().toString()  +"value of
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId)
-        {
-            R.id.action_settings->
-            {
-                var intent= Intent(this,SettingsActivity::class.java)
+        when (item.itemId) {
+            R.id.action_settings -> {
+                var intent = Intent(this, SettingsActivity::class.java)
+                intent.putExtra("category","Settings")
                 startActivity(intent)
             }
-            R.id.action_share->
-            {
-               Toasty.success(this,"coming soon..",Toast.LENGTH_SHORT).show()
+            R.id.action_share -> {
+                Toasty.success(this, "coming soon..", Toast.LENGTH_SHORT).show()
             }
-            R.id.action_about_us->
-            {
-                Toasty.success(this,"coming soon..",Toast.LENGTH_SHORT).show()
+            R.id.action_about_us -> {
+                Toasty.success(this, "coming soon..", Toast.LENGTH_SHORT).show()
 
             }
-            R.id.action_sort->
-            {
-                Toasty.success(this,"coming soon..",Toast.LENGTH_SHORT).show()
-   }
+            R.id.action_sort -> {
+                Toasty.success(this, "coming soon..", Toast.LENGTH_SHORT).show()
+
+                //calling to category activity
+            }
         }
 
         return true

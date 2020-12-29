@@ -20,11 +20,16 @@
         android:orderInCategory="100"
         android:title="about us"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_rate_us"
+        android:orderInCategory="100"
+        android:title="rate us"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_sort"
         android:orderInCategory="100"
-        android:title="about us"
         android:icon="@drawable/ic_baseline_sort_24"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:title="sort" />
 </menu>

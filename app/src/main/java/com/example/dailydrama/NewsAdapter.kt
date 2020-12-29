@@ -2,8 +2,8 @@ package com.example.dailydrama
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +18,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.content_main1.*
 
 
-class NewsAdapter(val context: Context, val artilces: List<Article>) :
+class NewsAdapter(val context: Context?, val artilces: List<Article>) :
     RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
 
@@ -43,7 +42,8 @@ class NewsAdapter(val context: Context, val artilces: List<Article>) :
         holder.progressbar.visibility=View.VISIBLE
         holder.newsTitle.text=article.title
         holder.newsDescription.text=article.description
-        Glide.with(context).load(article.urlToImage).listener(object : RequestListener<Drawable> {
+        this!!.context?.let {
+            Glide.with(it).load(article.urlToImage).listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -51,8 +51,10 @@ class NewsAdapter(val context: Context, val artilces: List<Article>) :
                     isFirstResource: Boolean
                 ): Boolean {
                     holder.progressbar.visibility=View.GONE
-                    Toasty.warning(context, "unable to load the image at this moment", Toast.LENGTH_SHORT, true).show();
-                   return false
+
+                    holder.newsImage.setBackgroundColor(Color.parseColor("#F9DDA4"))
+
+                    return false
                 }
 
                 override fun onResourceReady(
@@ -66,17 +68,20 @@ class NewsAdapter(val context: Context, val artilces: List<Article>) :
                     holder.progressbar.visibility=View.GONE
                     return false
                 }
-//listner for checking whether image has loaded or not..
+    //listner for checking whether image has loaded or not..
             }). into(holder.newsImage)
+        }
 
 
 
         holder.itemView.setOnClickListener{
-         Toasty.success(context, article.title, Toast.LENGTH_SHORT,true).show();
+         if (context != null) {
+             Toasty.success(context, article.title, Toast.LENGTH_SHORT,true).show()
+         };
 
             var intent= Intent(context,DetailedActivity::class.java)
             intent.putExtra("URL",article.url)
-            context.startActivity(intent)
+            context?.startActivity(intent)
 
         }
 
