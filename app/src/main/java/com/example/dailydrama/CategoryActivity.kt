@@ -1,5 +1,7 @@
 package com.example.dailydrama
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,6 +22,38 @@ class CategoryActivity : AppCompatActivity() {
 
 
     }
+    //this method will execute after clicking on back button.
+    //Alert dialog
+    @Override
+    override fun onBackPressed() {
+        var alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Exit App!")
+        alertDialog.setMessage("Do you really want to exit app?")
+        alertDialog.setIcon(R.drawable.ic_baseline_exit_to_app_24)
+        alertDialog.setCancelable(false)
+
+        var listener = DialogInterface.OnClickListener { dialogInterface, which ->
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                super.onBackPressed()
+                finish()
+            } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                dialogInterface.dismiss()
+
+            } else if (which == DialogInterface.BUTTON_NEUTRAL) {
+                dialogInterface.dismiss()
+            }
+
+        }
+
+        alertDialog.setPositiveButton("yes", listener)
+        alertDialog.setNegativeButton("no", listener)
+        alertDialog.setNeutralButton("cancel", listener)
+        alertDialog.show()
+
+
+    }
+
+
 
     private fun setSingleEvent(mainGridayout: GridLayout?) {
 

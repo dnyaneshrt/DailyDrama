@@ -9,7 +9,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-       var name= intent.getStringExtra("category")
+        var name= intent.getStringExtra("category")
         textView.setText(name+" coming soon")
     }
 }

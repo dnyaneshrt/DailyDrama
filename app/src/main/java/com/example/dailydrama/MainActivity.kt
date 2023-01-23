@@ -1,5 +1,7 @@
 package com.example.dailydrama
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -170,4 +172,8 @@ class MainActivity : AppCompatActivity() {
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
+
+
+
+
 }

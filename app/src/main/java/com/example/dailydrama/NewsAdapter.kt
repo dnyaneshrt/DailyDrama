@@ -23,7 +23,6 @@ import es.dmoral.toasty.Toasty
 class NewsAdapter(val context: Context?, val artilces: List<Article>) :
     RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
 
       val view=LayoutInflater.from(context).inflate(R.layout.item_layout,parent,false)
@@ -77,11 +76,11 @@ class NewsAdapter(val context: Context?, val artilces: List<Article>) :
         holder.itemView.setOnClickListener{
          if (context != null) {
              Toasty.success(context, article.title, Toast.LENGTH_SHORT,true).show()
-         };
 
-            var intent= Intent(context,DetailedActivity::class.java)
-            intent.putExtra("URL",article.url)
-            context?.startActivity(intent)
+             var intent= Intent(context,DetailedActivity::class.java)
+             intent.putExtra("URL",article.url)
+             context?.startActivity(intent)  };
+
 
         }
 
