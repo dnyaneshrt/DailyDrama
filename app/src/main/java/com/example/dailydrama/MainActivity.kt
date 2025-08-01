@@ -1,25 +1,24 @@
 package com.example.dailydrama
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.littlemango.stacklayoutmanager.StackLayoutManager
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main1.*
-
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,8 +97,10 @@ class MainActivity : AppCompatActivity() {
         Log.d("getNews", "request for page  $pageNum")
 
         var name = intent.getStringExtra("category")
-        val news = NewService.newsInstance.getHeadlines("in", pageNum, name, "popularity")
+        val news = NewService.newsInstance.getHeadlines("us", pageNum, name, "popularity")
 
+//        val news = NewService.newsInstance.getHeadlines()
+        Log.d("getNews", "news---------------------------- ${news}")
         news.enqueue(object : Callback<News> {
             override fun onFailure(call: Call<News>, t: Throwable) {
                 progressBar_main.visibility = View.GONE
@@ -113,8 +114,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<News>, response: Response<News>) {
-
+//                Log.d("RetrofitURL", "Request URL: ${call.request().url()}")
+                Log.d("RetrofitURL", "onResponse Request URL: ${call.request().url()}")
+                Log.d("StatusCode", "onResponse HTTP status: ${response.code()}")
+                Log.d("ErrorBody", "onResponse Error body: ${response.errorBody()?.string()}")
+                Log.d("Headers", "onResponse Headers: ${response.headers()}")
                 val mynews = response.body()
+                Log.d("Request Retrofit body", "onResponse Request mynews = response.body() $mynews")
+                // ...rest of your code
+//                val mynews:News? = response.body()
+//                val mynews = response.body()
+                Log.d("Request Retrofit body", "onResponse Request mynews = response.body() ${mynews}")
+
+
+
 
                 if (mynews != null) {
                     progressBar_main.visibility = View.GONE
@@ -124,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("ifblock", response.body().toString())
 
                     totalResults = mynews.totalResults    //will get total count here
+
 
                     articles.addAll(mynews.articles)
                     adapter.notifyDataSetChanged()
